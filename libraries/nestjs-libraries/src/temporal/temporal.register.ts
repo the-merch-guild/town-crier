@@ -12,28 +12,35 @@ export class TemporalRegister implements OnModuleInit {
   constructor(private _client: TemporalService) {}
 
   async onModuleInit(): Promise<void> {
-    const connection = this._client?.client?.getRawClient()
-      ?.connection as Connection;
+    try {
+      const connection = this._client?.client?.getRawClient()
+        ?.connection as Connection;
 
-    const { customAttributes } =
-      await connection.operatorService.listSearchAttributes({
-        namespace: process.env.TEMPORAL_NAMESPACE || 'default',
-      });
+      const { customAttributes } =
+        await connection.operatorService.listSearchAttributes({
+          namespace: process.env.TEMPORAL_NAMESPACE || 'default',
+        });
 
-    const neededAttribute = ['organizationId', 'postId'];
-    const missingAttributes = neededAttribute.filter(
-      (attr) => !customAttributes[attr],
-    );
+      const neededAttribute = ['organizationId', 'postId'];
+      const missingAttributes = neededAttribute.filter(
+        (attr) => !customAttributes[attr],
+      );
 
-    if (missingAttributes.length > 0) {
-      await connection.operatorService.addSearchAttributes({
-        namespace: process.env.TEMPORAL_NAMESPACE || 'default',
-        searchAttributes: missingAttributes.reduce((all, current) => {
-          // @ts-ignore
-          all[current] = 1;
-          return all;
-        }, {}),
-      });
+      if (missingAttributes.length > 0) {
+        await connection.operatorService.addSearchAttributes({
+          namespace: process.env.TEMPORAL_NAMESPACE || 'default',
+          searchAttributes: missingAttributes.reduce((all, current) => {
+            // @ts-ignore
+            all[current] = 1;
+            return all;
+          }, {}),
+        });
+      }
+    } catch (error) {
+      console.warn(
+        '[TemporalRegister] Unable to register search attributes, continuing startup:',
+        (error as Error)?.message || error,
+      );
     }
   }
 }
