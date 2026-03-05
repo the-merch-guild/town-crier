@@ -1,0 +1,7 @@
+[build]
+buildCommand = "pnpm build:backend"
+
+[deploy]
+startCommand = "node --experimental-require-module ./dist/apps/backend/src/main.js"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10

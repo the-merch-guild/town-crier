@@ -1,0 +1,7 @@
+[build]
+buildCommand = "pnpm build"
+
+[deploy]
+startCommand = "pnpm start:prod:backend"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10

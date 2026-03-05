@@ -1,0 +1,7 @@
+[build]
+buildCommand = "pnpm --filter @postiz/node exec tsup"
+
+[deploy]
+startCommand = "sh -lc \"echo sdk artifact build service; sleep infinity\""
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10

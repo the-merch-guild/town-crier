@@ -1,0 +1,7 @@
+[build]
+buildCommand = "pnpm --filter postiz build"
+
+[deploy]
+startCommand = "pnpm --filter postiz start"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10

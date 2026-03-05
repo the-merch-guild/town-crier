@@ -1,0 +1,7 @@
+[build]
+buildCommand = "pnpm build:orchestrator"
+
+[deploy]
+startCommand = "node --experimental-require-module ./dist/apps/orchestrator/src/main.js"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
