@@ -6,6 +6,20 @@ export const getTemporalModule = (
   path?: string,
   activityClasses?: any[]
 ) => {
+  const task_queue_filter = (process.env.TEMPORAL_TASK_QUEUES || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const worker_list = [
+    { identifier: 'main', maxConcurrentJob: undefined },
+    ...socialIntegrationList,
+  ].filter((f) => f.identifier.indexOf('-') === -1);
+
+  const filtered_worker_list = task_queue_filter.length
+    ? worker_list.filter((w) => task_queue_filter.includes(w.identifier))
+    : worker_list;
+
   return TemporalModule.register({
     isGlobal: true,
     connection: {
@@ -16,12 +30,7 @@ export const getTemporalModule = (
     logLevel: 'error',
     ...(isWorkers
       ? {
-          workers: [
-            { identifier: 'main', maxConcurrentJob: undefined },
-            ...socialIntegrationList,
-          ]
-            .filter((f) => f.identifier.indexOf('-') === -1)
-            .map((integration) => ({
+          workers: filtered_worker_list.map((integration) => ({
               taskQueue: integration.identifier.split('-')[0],
               workflowsPath: path!,
               activityClasses: activityClasses!,
