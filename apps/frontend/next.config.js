@@ -13,6 +13,9 @@ const nextConfig = {
       headers: [{
         key: "Document-Policy",
         value: "js-profiling",
+      }, {
+        key: "X-Robots-Tag",
+        value: "noindex, nofollow, noarchive, nosnippet, noimageindex",
       }, ],
     }, ];
   },
